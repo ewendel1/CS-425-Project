@@ -12,20 +12,21 @@ public class Demo {
 
 //step2 create  the connection object
             Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521/ORCL", "HR", "oracle");
-            System.out.println("Database successfully connected");
+            	System.out.println("Database successfully connected");
+            
 //step3 create the statement object
             Statement st = conn.createStatement();
 
 //step4 execute query
 
             String dept = "Biology";
-/*
-            ResultSet rs = st.executeQuery("select * from Instructor where dept_name='" + dept + "'");
+            
+            ResultSet rs = st.executeQuery("select * from ADDRESS where Zipcode=123");
 
             while (rs.next()) {
-                System.out.println(rs.getString(1) + "  " + rs.getString("Name") + "  " + rs.getString("dept_name") + "  " + rs.getFloat(4));
+                System.out.println(rs.getString("City"));
             }
-
+/*
             Statement st2 = conn.createStatement();
             st2.executeUpdate("insert into instructor values('11341', 'Perry', 'Physics', 98000)");
 
@@ -53,12 +54,13 @@ public class Demo {
             while (rs2.next()) {
                 System.out.println(rs2.getString("COLUMN_NAME") + "  " + rs2.getString("TYPE_NAME") + "  " + rs2.getString("COLUMN_SIZE"));
 
-
-//step5 close the connection object
-                conn.close();
-
-            }
 */
+//step5 close the connection object
+                st.close();
+            	conn.close();
+
+            //}
+
         }catch(Exception e){System.out.println(e); }
         }
     }

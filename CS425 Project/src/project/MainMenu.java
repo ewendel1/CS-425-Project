@@ -7,8 +7,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import javax.swing.SwingConstants;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -16,13 +19,15 @@ import java.awt.Font;
 import javax.swing.JTextField;
 import java.awt.Canvas;
 
+import java.sql.*;
+
 public class MainMenu extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
+	private JTextField usernameCus;
+	private JTextField passCus;
+	private JTextField usernameEmp;
+	private JTextField passEmp;
 
 	/**
 	 * Launch the application.
@@ -33,11 +38,13 @@ public class MainMenu extends JFrame {
 				try {
 					MainMenu frame = new MainMenu();
 					frame.setVisible(true);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
+		
 	}
 
 	
@@ -63,12 +70,50 @@ public class MainMenu extends JFrame {
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
+					Class.forName("oracle.jdbc.driver.OracleDriver");
+					Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521/ORCL", "HR", "oracle");
+					Statement st = conn.createStatement();
+					ResultSet rs = st.executeQuery("select * from CUSTOMERS where EMAIL='"+usernameCus.getText()+"'");
+					if(rs.next() && rs.getString("PASSWORD").compareTo(passCus.getText())==0) {
+						new CustomerPage().setVisible(true);
+						dispose();
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "Log in failed. Wrong username or password.");
+					}
+					st.close();
+	            	conn.close();
+				} catch (Exception r) {
+					r.printStackTrace();
+				}
 			}
 		});
 		btnNewButton.setBounds(167, 372, 113, 43);
 		contentPane.add(btnNewButton);
 		
 		JButton btnNewButton_1 = new JButton("Log in");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Class.forName("oracle.jdbc.driver.OracleDriver");
+					Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521/ORCL", "HR", "oracle");
+					Statement st = conn.createStatement();
+					ResultSet rs = st.executeQuery("select * from EMPLOYEES where EMAIL='"+usernameEmp.getText()+"'");
+					if(rs.next() && rs.getString("PASSWORD").compareTo(passEmp.getText())==0) {
+						new EmployeePage().setVisible(true);
+						dispose();
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "Log in failed. Wrong username or password.");
+					}
+					st.close();
+	            	conn.close();
+				} catch (Exception r) {
+					r.printStackTrace();
+				}
+			}
+		});
 		btnNewButton_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnNewButton_1.setBounds(514, 372, 113, 43);
 		contentPane.add(btnNewButton_1);
@@ -88,25 +133,25 @@ public class MainMenu extends JFrame {
 		lblPassword_1.setBounds(427, 286, 85, 43);
 		contentPane.add(lblPassword_1);
 		
-		textField = new JTextField();
-		textField.setBounds(204, 215, 122, 26);
-		contentPane.add(textField);
-		textField.setColumns(10);
+		usernameCus = new JTextField();
+		usernameCus.setBounds(204, 215, 122, 26);
+		contentPane.add(usernameCus);
+		usernameCus.setColumns(10);
 		
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(204, 300, 122, 26);
-		contentPane.add(textField_1);
+		passCus = new JTextField();
+		passCus.setColumns(10);
+		passCus.setBounds(204, 300, 122, 26);
+		contentPane.add(passCus);
 		
-		textField_2 = new JTextField();
-		textField_2.setColumns(10);
-		textField_2.setBounds(548, 219, 122, 26);
-		contentPane.add(textField_2);
+		usernameEmp = new JTextField();
+		usernameEmp.setColumns(10);
+		usernameEmp.setBounds(548, 219, 122, 26);
+		contentPane.add(usernameEmp);
 		
-		textField_3 = new JTextField();
-		textField_3.setColumns(10);
-		textField_3.setBounds(548, 300, 122, 26);
-		contentPane.add(textField_3);
+		passEmp = new JTextField();
+		passEmp.setColumns(10);
+		passEmp.setBounds(548, 300, 122, 26);
+		contentPane.add(passEmp);
 		
 		JLabel lblCustomer = new JLabel("Customer Sign in");
 		lblCustomer.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -124,6 +169,13 @@ public class MainMenu extends JFrame {
 		contentPane.add(lblOnlineRetailer);
 		
 		JButton btnSignUp = new JButton("Sign Up");
+		btnSignUp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new CustomerSignup().setVisible(true);
+				dispose();
+				
+			}
+		});
 		btnSignUp.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnSignUp.setBounds(167, 447, 113, 43);
 		contentPane.add(btnSignUp);
@@ -132,5 +184,24 @@ public class MainMenu extends JFrame {
 		lblOr.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblOr.setBounds(204, 410, 85, 43);
 		contentPane.add(lblOr);
+		
+		Icon icon = new ImageIcon("C:\\Users\\ijahw\\Documents\\IIT\\Spring 2022\\CS 425\\home.png");
+		
+		JButton btnSignUp2 = new JButton("Sign Up");
+		btnSignUp2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new EmployeeSignup().setVisible(true);
+				dispose();
+			}
+		});
+		btnSignUp2.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		btnSignUp2.setBounds(514, 447, 113, 43);
+		contentPane.add(btnSignUp2);
+		
+		JLabel lblOr_1 = new JLabel("Or");
+		lblOr_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblOr_1.setBounds(551, 410, 85, 43);
+		contentPane.add(lblOr_1);
+		
 	}
 }

@@ -8,9 +8,11 @@ import java.awt.event.ActionListener;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
 
 public class EmployeeInfo extends JFrame {
 
@@ -53,6 +55,29 @@ public class EmployeeInfo extends JFrame {
 		});
 		btnNewButton.setBounds(10, 10, 45, 39);
 		contentPane.add(btnNewButton);
+		
+		String[] options = {
+		        "Options",
+				"My Profile",
+		         "Log out",
+		};
+		JComboBox settings = new JComboBox(options);
+		settings.setEditable(true);
+		settings.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String val = (String) settings.getSelectedItem();
+				if (val.compareTo("My Profile")==0) {
+					new EmployeeInfo().setVisible(true);
+					dispose();
+				}
+				else if(val.compareTo("Log out")==0) {
+					new MainMenu().setVisible(true);
+					dispose();
+				}
+			}
+		});
+		settings.setBounds(684, 10, 102, 39);
+		getContentPane().add(settings);
 	}
 
 }

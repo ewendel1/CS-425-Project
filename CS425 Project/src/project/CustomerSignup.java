@@ -60,14 +60,14 @@ public class CustomerSignup extends JFrame {
 		lblNewLabel.setBounds(64, 10, 188, 39);
 		contentPane.add(lblNewLabel);
 		
-		JLabel lblNewLabel_1 = new JLabel("Name");
+		JLabel lblNewLabel_1 = new JLabel("Name *");
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblNewLabel_1.setBounds(38, 90, 45, 13);
+		lblNewLabel_1.setBounds(38, 90, 55, 13);
 		contentPane.add(lblNewLabel_1);
 		
-		JLabel lblNewLabel_1_1 = new JLabel("Email");
+		JLabel lblNewLabel_1_1 = new JLabel("Email *");
 		lblNewLabel_1_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblNewLabel_1_1.setBounds(38, 125, 45, 13);
+		lblNewLabel_1_1.setBounds(38, 125, 55, 13);
 		contentPane.add(lblNewLabel_1_1);
 		
 		JLabel lblNewLabel_1_1_1 = new JLabel("Payment Method");
@@ -90,7 +90,7 @@ public class CustomerSignup extends JFrame {
 		lblNewLabel_1_1_2_1_1.setBounds(38, 221, 125, 20);
 		contentPane.add(lblNewLabel_1_1_2_1_1);
 		
-		JLabel lblNewLabel_1_1_2_1_1_1 = new JLabel("Password");
+		JLabel lblNewLabel_1_1_2_1_1_1 = new JLabel("Password *");
 		lblNewLabel_1_1_2_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblNewLabel_1_1_2_1_1_1.setBounds(38, 251, 125, 20);
 		contentPane.add(lblNewLabel_1_1_2_1_1_1);
@@ -140,17 +140,25 @@ public class CustomerSignup extends JFrame {
 		payment.setBounds(166, 328, 125, 20);
 		contentPane.add(payment);
 		
+		
 		JButton btnNewButton = new JButton("Sign Up");
 		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
+			public void actionPerformed(ActionEvent e) {			
 				try {
 					Class.forName("oracle.jdbc.driver.OracleDriver");
 					Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521/ORCL", "HR", "oracle");
-		            Statement st = conn.createStatement();
-		            st.executeUpdate("INSERT INTO CUSTOMERS (CUSTOMERID, NAME, EMAIL, PAYMENTMETHOD, AGE, SEX, PHONENUMBER, PASSWORD, ADDRESSID) VALUES ('4', '"+name.getText() +"', '"+email.getText()+"',"
+		            PreparedStatement pst = conn.prepareStatement("select COSTUMERS_SEQUENCE.NEXTVAL from dual");
+		            synchronized( this ) {
+		               ResultSet rs = pst.executeQuery();
+		               long myId = 0;
+		               if(rs.next()) {
+		                 myId = rs.getLong(1);
+		               }
+		               Statement st = conn.createStatement();
+			           st.executeUpdate("INSERT INTO CUSTOMERS (CUSTOMERID, NAME, EMAIL, PAYMENTMETHOD, AGE, SEX, PHONENUMBER, PASSWORD, ADDRESSID) VALUES ('"+myId+"', '"+name.getText() +"', '"+email.getText()+"',"
 		            		+ " '3', '"+Integer.parseInt(age.getText())+"', '"+sex.getText()+"', '"+Integer.parseInt(phoneNumber.getText())+"', '"+password.getText()+"', '2')");
-					st.close();
+			           st.close();
+		            }
 	            	conn.close();
 	            	new MainMenu().setVisible(true);
 					dispose();

@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
 
 import javax.swing.Icon;
@@ -127,10 +129,18 @@ public class EmployeeSignup extends JFrame {
 				try {
 					Class.forName("oracle.jdbc.driver.OracleDriver");
 					Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521/ORCL", "HR", "oracle");
-		            Statement st = conn.createStatement();
-		            st.executeUpdate("INSERT INTO EMPLOYEES (EMPLOYEEID, NAME, EMAIL, SEX, PHONENUMBER, PASSWORD) VALUES ('3', '"+name.getText() +"', '"+email.getText()+"', '"
+					PreparedStatement pst = conn.prepareStatement("select EMPLOYEE_SEQUENCE.NEXTVAL from dual");
+		            synchronized( this ) {
+		               ResultSet rs = pst.executeQuery();
+		               long myId = 0;
+		               if(rs.next()) {
+		                 myId = rs.getLong(1);
+		               }
+		               Statement st = conn.createStatement();
+		               st.executeUpdate("INSERT INTO EMPLOYEES (EMPLOYEEID, NAME, EMAIL, SEX, PHONENUMBER, PASSWORD) VALUES ('"+myId+"', '"+name.getText() +"', '"+email.getText()+"', '"
 		            		+ sex.getText()+"', '"+Integer.parseInt(phoneNumber.getText())+"', '"+password.getText()+"')");
-					st.close();
+		               st.close();
+		            }
 	            	conn.close();
 	            	new MainMenu().setVisible(true);
 					dispose();

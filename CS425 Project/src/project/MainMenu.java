@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -14,6 +15,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.PrintWriter;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
 import javax.swing.JTextField;
@@ -75,7 +77,10 @@ public class MainMenu extends JFrame {
 					Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521/ORCL", "HR", "oracle");
 					Statement st = conn.createStatement();
 					ResultSet rs = st.executeQuery("select * from CUSTOMERS where EMAIL='"+usernameCus.getText()+"'");
-					if(rs.next() && rs.getString("PASSWORD").compareTo(passCus.getText())==0) {
+					if(rs.next() && rs.getString("PASSWORD").compareTo(passCus.getText())==0) {	
+						PrintWriter writer = new PrintWriter("mydata.ser");
+		                writer.println(rs.getString("CUSTOMERID"));
+		                writer.close();
 						new CustomerPage().setVisible(true);
 						dispose();
 					}
@@ -84,6 +89,8 @@ public class MainMenu extends JFrame {
 					}
 					st.close();
 	            	conn.close();
+	            	
+	            	
 				} catch (Exception r) {
 					r.printStackTrace();
 				}
@@ -138,7 +145,7 @@ public class MainMenu extends JFrame {
 		contentPane.add(usernameCus);
 		usernameCus.setColumns(10);
 		
-		passCus = new JTextField();
+		passCus = new JPasswordField();
 		passCus.setColumns(10);
 		passCus.setBounds(204, 300, 122, 26);
 		contentPane.add(passCus);
@@ -148,7 +155,7 @@ public class MainMenu extends JFrame {
 		usernameEmp.setBounds(548, 219, 122, 26);
 		contentPane.add(usernameEmp);
 		
-		passEmp = new JTextField();
+		passEmp = new JPasswordField();
 		passEmp.setColumns(10);
 		passEmp.setBounds(548, 300, 122, 26);
 		contentPane.add(passEmp);

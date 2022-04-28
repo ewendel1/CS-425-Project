@@ -12,6 +12,8 @@ import java.awt.Font;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -62,6 +64,33 @@ public class Cart extends JFrame {
 		btnNewButton.setBounds(10, 10, 45, 39);
 		contentPane.add(btnNewButton);
 		
+		String[] options = {
+				 "Options",
+		         "My Profile",
+		         "View Cart",
+		         "Log out",
+		};
+		JComboBox settings = new JComboBox(options);
+		settings.setEditable(true);
+		settings.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String val = (String) settings.getSelectedItem();
+				if (val.compareTo("My Profile")==0) {
+					new CustomerInfo().setVisible(true);
+					dispose();
+				}
+				else if(val.compareTo("View Cart")==0) {
+					new Cart().setVisible(true);
+					dispose();
+				}
+				else if(val.compareTo("Log out")==0) {
+					new MainMenu().setVisible(true);
+					dispose();
+				}
+			}
+		});
+		settings.setBounds(684, 10, 102, 39);
+		getContentPane().add(settings);
 	}
 
 }
